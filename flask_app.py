@@ -1,6 +1,7 @@
 import collections
 import json
 import os
+import timeit
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import numpy as np
@@ -427,6 +428,7 @@ def pontos():
 
 
 def liga_class():
+    start_time = timeit.default_timer()
     dict_prim_turno = {}
     dict_prim_turno_pts = {}
     primeiro_turno_ = {}
@@ -578,6 +580,8 @@ def liga_class():
 
     with open(f'static/dict_prem.json', 'w', encoding='utf-8') as f:
         json.dump(dict_prem, f)
+
+    print(timeit.default_timer() - start_time)
 
     return primeiro_turno, segundo_turno, campeonato, sem_capitao
 
