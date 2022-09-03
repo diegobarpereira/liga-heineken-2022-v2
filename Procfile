@@ -1,1 +1,1 @@
-web: gunicorn main:app --workers 6 --threads 4
+web: gunicorn flask_app:app --workers 6 --threads 2
