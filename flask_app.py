@@ -428,7 +428,7 @@ def pontos():
 
 
 def liga_class():
-    start_time = timeit.default_timer()
+
     dict_prim_turno = {}
     dict_prim_turno_pts = {}
     primeiro_turno_ = {}
@@ -580,8 +580,6 @@ def liga_class():
 
     with open(f'static/dict_prem.json', 'w', encoding='utf-8') as f:
         json.dump(dict_prem, f)
-
-    print(timeit.default_timer() - start_time)
 
     return primeiro_turno, segundo_turno, campeonato, sem_capitao
 
@@ -1791,6 +1789,7 @@ def mata_mata_prim_turno():
 
 
 def get_liberta_seg_turno():
+    start_time = timeit.default_timer()
     dict_liberta_ = collections.defaultdict(list)
     dict_liberta_pts = {}
     dict_liberta = {}
@@ -1814,14 +1813,12 @@ def get_liberta_seg_turno():
             for key, v in get_times_rodada()['1'].items():
                 dict_liberta_[key].append(0.00)
 
-    novo_dict_liberta = dict(dict_liberta_)
-
-    for time_id in list(novo_dict_liberta):
+    for time_id in list(dict(dict_liberta_)):
         if int(time_id) not in grupo_liberta_seg_turno:
-            novo_dict_liberta.pop(str(time_id))
+            dict(dict_liberta_).pop(str(time_id))
 
     for item in grupo_liberta_seg_turno:
-        ordered_dict_liberta[str(item)] = novo_dict_liberta[str(item)]
+        ordered_dict_liberta[str(item)] = dict(dict_liberta_)[str(item)]
 
     for chave, valor in ordered_dict_liberta.items():
         for c, v in json.loads(escudos).items():
@@ -1838,13 +1835,6 @@ def get_liberta_seg_turno():
             for c1, v1 in dict_liberta_pts.items():
                 if teams.info.nome == c1:
                     v1[1].append(teams.pontos)
-
-            # dict_parciais[teams.info.nome] = teams.pontos
-
-        # for c1, v1 in dict_liberta_pts.items():
-        #     for key, value in dict_parciais.items():
-        #         if c1 == key:
-        #             v1[1].append(value)
 
     rodada_25 = []
     rodada_26 = []
@@ -2153,6 +2143,8 @@ def get_liberta_seg_turno():
         g5.append(classificacao[ind])
     for ind in range(20, 24):
         g6.append(classificacao[ind])
+
+    print(timeit.default_timer() - start_time)
 
     return jogos_rodada_25, jogos_rodada_26, jogos_rodada_27, jogos_rodada_28, jogos_rodada_29, jogos_rodada_30, g1, g2, g3, g4, g5, g6
 
