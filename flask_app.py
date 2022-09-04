@@ -1788,8 +1788,13 @@ def mata_mata_prim_turno():
     return jogos_oitavas_a, jogos_oitavas_b, jogos_quartas_a, jogos_quartas_b, jogos_semis_a, jogos_semis_b, jogos_final_a, jogos_final_b, esq_maior
 
 
+def get_parciais(time_id):
+    # return_parciais = [api.time_parcial(time_id)]
+    return api.time_parcial(time_id)
+
+
 def get_liberta_seg_turno():
-    start_time = timeit.default_timer()
+
     dict_liberta_ = collections.defaultdict(list)
     dict_liberta_pts = {}
     dict_liberta = {}
@@ -1841,13 +1846,16 @@ def get_liberta_seg_turno():
     jogos_rodada_30 = []
 
     if mercado_status == 'Mercado fechado':
+        start_time = timeit.default_timer()
         with ThreadPoolExecutor(max_workers=40) as executor:
-            threads = executor.map(api.time_parcial, grupo_liberta_seg_turno)
+            threads = executor.map(get_parciais, grupo_liberta_seg_turno)
 
-        for teams in threads:
-            for c1, v1 in dict_liberta_pts.items():
-                if teams.info.nome == c1:
-                    v1[1].append(teams.pontos)
+            for teams in threads:
+                for c1, v1 in dict_liberta_pts.items():
+                    if teams.info.nome == c1:
+                        v1[1].append(teams.pontos)
+
+        print(timeit.default_timer() - start_time)
 
         for key, value in dict_liberta_pts.items():
             rodada_25.append([key, value[1][6] if rod == 25 else value[1][0]])
@@ -1874,6 +1882,8 @@ def get_liberta_seg_turno():
     #     rodada_28.append([key, value[1][6] if mercado_status == 'Mercado fechado' and rod == 28 else value[1][3]])
     #     rodada_29.append([key, value[1][6] if mercado_status == 'Mercado fechado' and rod == 29 else value[1][4]])
     #     rodada_30.append([key, value[1][6] if mercado_status == 'Mercado fechado' and rod == 30 else value[1][5]])
+
+
 
     jogos_rodada_25.append([rodada_25[0][0], rodada_25[0][1], 'x', rodada_25[1][1], rodada_25[1][0]])
     jogos_rodada_25.append([rodada_25[2][0], rodada_25[2][1], 'x', rodada_25[3][1], rodada_25[3][0]])
@@ -2162,7 +2172,6 @@ def get_liberta_seg_turno():
     for ind in range(20, 24):
         g6.append(classificacao[ind])
 
-    print(timeit.default_timer() - start_time)
 
     return jogos_rodada_25, jogos_rodada_26, jogos_rodada_27, jogos_rodada_28, jogos_rodada_29, jogos_rodada_30, g1, g2, g3, g4, g5, g6
 
