@@ -1825,12 +1825,12 @@ def get_liberta_seg_turno():
     for item in grupo_liberta_seg_turno:
         ordered_dict_liberta[str(item)] = dict(dict_liberta_)[str(item)]
 
-    for chave, valor in ordered_dict_liberta.items():
-        for c, v in json.loads(escudos).items():
-            for id, nome in json.loads(nomes).items():
-                if chave == c:
-                    if chave == id:
-                        dict_liberta_pts[nome] = [v, valor]
+    # for chave, valor in ordered_dict_liberta.items():
+    #     for c, v in json.loads(escudos).items():
+    #         for id, nome in json.loads(nomes).items():
+    #             if chave == c:
+    #                 if chave == id:
+    #                     dict_liberta_pts[nome] = [v, valor]
 
     rodada_25 = []
     rodada_26 = []
@@ -1846,16 +1846,26 @@ def get_liberta_seg_turno():
     jogos_rodada_30 = []
 
     if mercado_status == 'Mercado fechado':
-        start_time = timeit.default_timer()
+
         with ThreadPoolExecutor(max_workers=40) as executor:
             threads = executor.map(get_parciais, grupo_liberta_seg_turno)
 
-            for teams in threads:
-                for c1, v1 in dict_liberta_pts.items():
-                    if teams.info.nome == c1:
-                        v1[1].append(teams.pontos)
+            start_time = timeit.default_timer()
 
-        print(timeit.default_timer() - start_time)
+            for teams in threads:
+                # for c1, v1 in dict_liberta_pts.items():
+                # if teams.info.id == ordered_dict_liberta.keys():
+                #         v1[1].append(teams.pontos)
+                ordered_dict_liberta[str(teams.info.id)].append(teams.pontos)
+
+            print(timeit.default_timer() - start_time)
+
+        for chave, valor in ordered_dict_liberta.items():
+            for c, v in json.loads(escudos).items():
+                for id, nome in json.loads(nomes).items():
+                    if chave == c:
+                        if chave == id:
+                            dict_liberta_pts[nome] = [v, valor]
 
         for key, value in dict_liberta_pts.items():
             rodada_25.append([key, value[1][6] if rod == 25 else value[1][0]])
@@ -1866,6 +1876,14 @@ def get_liberta_seg_turno():
             rodada_30.append([key, value[1][6] if rod == 30 else value[1][5]])
 
     if mercado_status == 'Mercado aberto':
+
+        for chave, valor in ordered_dict_liberta.items():
+            for c, v in json.loads(escudos).items():
+                for id, nome in json.loads(nomes).items():
+                    if chave == c:
+                        if chave == id:
+                            dict_liberta_pts[nome] = [v, valor]
+
         for key, value in dict_liberta_pts.items():
             rodada_25.append([key, value[1][0]])
             rodada_26.append([key, value[1][1]])
