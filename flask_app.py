@@ -545,30 +545,30 @@ def liga_class():
         with ThreadPoolExecutor(max_workers=40) as executor:
             threads = executor.map(api.time_parcial, todos_ids)
 
-        for teams in threads:
-            team_dict[teams.info.id] = teams.pontos
+            for teams in threads:
+                team_dict[teams.info.id] = teams.pontos
 
-        for (c1, v1), (chave, valor), (chave_, valor_), (chave_sc, valor_sc) in zip(primeiro_turno_.items(),
-                                                                                    campeonato_.items(),
-                                                                                    segundo_turno_.items(),
-                                                                                    dict_sem_capitao.items()):
-            for c, e in json.loads(escudos).items():
-                for k, n in json.loads(nomes).items():
-                    for key, value in team_dict.items():
-                        if chave_ == c:
-                            if chave_ == k:
-                                if chave_ == str(key):
-                                    segundo_turno[n] = [e, valor_ + value, value]
-                        if chave == c:
-                            if chave == k:
-                                if chave == str(key):
-                                    campeonato[n] = [e, valor + value, value]
-                        if chave_sc == c:
-                            if chave_sc == k:
-                                sem_capitao[n] = [e, valor_sc]
-                        if c1 == c:
-                            if c1 == k:
-                                primeiro_turno[n] = [e, v1]
+            for (c1, v1), (chave, valor), (chave_, valor_), (chave_sc, valor_sc) in zip(primeiro_turno_.items(),
+                                                                                        campeonato_.items(),
+                                                                                        segundo_turno_.items(),
+                                                                                        dict_sem_capitao.items()):
+                for c, e in json.loads(escudos).items():
+                    for k, n in json.loads(nomes).items():
+                        for key, value in team_dict.items():
+                            if chave_ == c:
+                                if chave_ == k:
+                                    if chave_ == str(key):
+                                        segundo_turno[n] = [e, valor_ + value, value]
+                            if chave == c:
+                                if chave == k:
+                                    if chave == str(key):
+                                        campeonato[n] = [e, valor + value, value]
+                            if chave_sc == c:
+                                if chave_sc == k:
+                                    sem_capitao[n] = [e, valor_sc]
+                            if c1 == c:
+                                if c1 == k:
+                                    primeiro_turno[n] = [e, v1]
 
     primeiro_turno.pop('AvantiHulkFc')
     segundo_turno.pop('AvantiHulkFc')
