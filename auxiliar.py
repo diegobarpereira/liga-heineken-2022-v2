@@ -240,7 +240,7 @@ get_partidas()
 # add_liberta()
 # add_nome()
 #
-# print(timeit.default_timer() - start_time)
+print(timeit.default_timer() - start_time)
 
 # dict_nome_escudo_pontos = {"Christimao": 11, "Peix\u00e3o Irado": 10, "Diego Pereira FC": 12, "Markitos Bar": 13, "0VINTE1 FC": 14, "oSantista": 15, "Denoris F.C.": 16, "Ra\u00e7a Tim\u00e3o!!!": 17, "Gabitreta F C": 18, "Camisa21FC": 19, "Eae Malandro FC": 20, "JevyGoal": 21, "JUNA FUTEBOL CLUBE": 22, "Real Beach Soccer": 23, "Golden Lions FC": 24, "ThiagoRolo FC": 25, "CFDS06": 26, "Rod Santos FC": 27, "FAFA SHOW FC": 28, "ArrascaMaisDez": 29, "AvantiHulkFc": 30, "Gonella Verde ": 31, "Xanpion": 32, "S\u00f3h Taapa FC": 33, "RIVA 77 ": 34}
 #
