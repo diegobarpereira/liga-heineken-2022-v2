@@ -1885,12 +1885,12 @@ def get_liberta_seg_turno():
                             dict_liberta_pts[nome] = [v, valor]
 
         for key, value in dict_liberta_pts.items():
-            rodada_25.append([key, value[1][0]])
-            rodada_26.append([key, value[1][1]])
-            rodada_27.append([key, value[1][2]])
-            rodada_28.append([key, value[1][3]])
-            rodada_29.append([key, value[1][4]])
-            rodada_30.append([key, value[1][5]])
+            rodada_25.append([key, float(value[1][0])])
+            rodada_26.append([key, float(value[1][1])])
+            rodada_27.append([key, float(value[1][2])])
+            rodada_28.append([key, float(value[1][3])])
+            rodada_29.append([key, float(value[1][4])])
+            rodada_30.append([key, float(value[1][5])])
 
 
     # for key, value in dict_liberta_pts.items():
@@ -2189,7 +2189,6 @@ def get_liberta_seg_turno():
         g5.append(classificacao[ind])
     for ind in range(20, 24):
         g6.append(classificacao[ind])
-
 
     return jogos_rodada_25, jogos_rodada_26, jogos_rodada_27, jogos_rodada_28, jogos_rodada_29, jogos_rodada_30, g1, g2, g3, g4, g5, g6
 
