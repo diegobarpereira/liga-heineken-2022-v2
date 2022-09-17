@@ -1853,9 +1853,6 @@ def get_liberta_seg_turno():
             start_time = timeit.default_timer()
 
             for teams in threads:
-                # for c1, v1 in dict_liberta_pts.items():
-                # if teams.info.id == ordered_dict_liberta.keys():
-                #         v1[1].append(teams.pontos)
                 ordered_dict_liberta[str(teams.info.id)].append(teams.pontos)
 
             print(timeit.default_timer() - start_time)
@@ -1868,12 +1865,12 @@ def get_liberta_seg_turno():
                             dict_liberta_pts[nome] = [v, valor]
 
         for key, value in dict_liberta_pts.items():
-            rodada_25.append([key, value[1][6] if rod == 25 else value[1][0]])
-            rodada_26.append([key, value[1][6] if rod == 26 else value[1][1]])
-            rodada_27.append([key, value[1][6] if rod == 27 else value[1][2]])
-            rodada_28.append([key, value[1][6] if rod == 28 else value[1][3]])
-            rodada_29.append([key, value[1][6] if rod == 29 else value[1][4]])
-            rodada_30.append([key, value[1][6] if rod == 30 else value[1][5]])
+            rodada_25.append([key, float(value[1][6]) if rod == 25 else float(value[1][0])])
+            rodada_26.append([key, float(value[1][6]) if rod == 26 else float(value[1][1])])
+            rodada_27.append([key, float(value[1][6]) if rod == 27 else float(value[1][2])])
+            rodada_28.append([key, float(value[1][6]) if rod == 28 else float(value[1][3])])
+            rodada_29.append([key, float(value[1][6]) if rod == 29 else float(value[1][4])])
+            rodada_30.append([key, float(value[1][6]) if rod == 30 else float(value[1][5])])
 
     if api.mercado().status.nome == 'Mercado aberto':
 
@@ -1891,17 +1888,6 @@ def get_liberta_seg_turno():
             rodada_28.append([key, float(value[1][3])])
             rodada_29.append([key, float(value[1][4])])
             rodada_30.append([key, float(value[1][5])])
-
-
-    # for key, value in dict_liberta_pts.items():
-    #     rodada_25.append([key, value[1][6] if mercado_status == 'Mercado fechado' and rod == 25 else value[1][0]])
-    #     rodada_26.append([key, value[1][6] if mercado_status == 'Mercado fechado' and rod == 26 else value[1][1]])
-    #     rodada_27.append([key, value[1][6] if mercado_status == 'Mercado fechado' and rod == 27 else value[1][2]])
-    #     rodada_28.append([key, value[1][6] if mercado_status == 'Mercado fechado' and rod == 28 else value[1][3]])
-    #     rodada_29.append([key, value[1][6] if mercado_status == 'Mercado fechado' and rod == 29 else value[1][4]])
-    #     rodada_30.append([key, value[1][6] if mercado_status == 'Mercado fechado' and rod == 30 else value[1][5]])
-
-
 
     jogos_rodada_25.append([rodada_25[0][0], rodada_25[0][1], 'x', rodada_25[1][1], rodada_25[1][0]])
     jogos_rodada_25.append([rodada_25[2][0], rodada_25[2][1], 'x', rodada_25[3][1], rodada_25[3][0]])
