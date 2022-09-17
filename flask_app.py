@@ -1845,7 +1845,7 @@ def get_liberta_seg_turno():
     jogos_rodada_29 = []
     jogos_rodada_30 = []
 
-    if mercado_status == 'Mercado fechado':
+    if api.mercado().status.nome == 'Mercado fechado':
 
         with ThreadPoolExecutor(max_workers=40) as executor:
             threads = executor.map(get_parciais, grupo_liberta_seg_turno)
@@ -1875,7 +1875,7 @@ def get_liberta_seg_turno():
             rodada_29.append([key, value[1][6] if rod == 29 else value[1][4]])
             rodada_30.append([key, value[1][6] if rod == 30 else value[1][5]])
 
-    if mercado_status == 'Mercado aberto':
+    if api.mercado().status.nome == 'Mercado aberto':
 
         for chave, valor in ordered_dict_liberta.items():
             for c, v in json.loads(escudos).items():
