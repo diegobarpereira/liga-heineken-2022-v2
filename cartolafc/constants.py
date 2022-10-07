@@ -30,6 +30,10 @@ rodadas_quartas_prim_turno = range(14, 16)
 rodadas_semis_prim_turno = range(16, 18)
 rodadas_finais_prim_turno = range(18, 20)
 rodadas_liberta_seg_turno = range(25, 31)
+rodadas_oitavas_seg_turno = range(31, 33)
+rodadas_quartas_seg_turno = range(33, 35)
+rodadas_semis_seg_turno = range(35, 37)
+rodadas_finais_seg_turno = range(37, 38)
 
 grupo_liberta_prim_turno = [8912058, 44558779, 14439636, 71375,
                             18796615, 25588958, 25582672, 1245808,
@@ -54,3 +58,11 @@ grupo_liberta_seg_turno = [28919430, 1241021, 219929, 18796615,
                            1245808, 1889674, 579336, 25582672,
                            13957925, 1893918, 19190102, 1235701,
                            71375, 315637, 977136, 8912058]
+
+list_oitavas_seg_turno = ['1245808', '44558779', '71375', '44514741', '1241021', '219929', '19190102', '8912058', '48733', '13957925', '1889674', '44509672', '977136', '18796615', '1893918', '3646412']
+
+list_quartas_seg_turno = []
+
+list_semis_seg_turno = []
+
+list_finais_seg_turno = []

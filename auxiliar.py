@@ -5,6 +5,8 @@ import timeit
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import datetime
 
+from flask_app import get_class_liberta_seg_turno
+
 api = cartolafc.Api(
     glb_id='1b62a06f6d67add624e2360012d974b304a5044624c486a50716e5a374a666539744c3738702d386b79516e466c36466f546546585070585f4c414b74666a6f4273597363697258754b374a6d7257487a724b716c7a36653531556f555a6f6f2d503665574e673d3d3a303a646965676f2e323031312e382e35')
 
@@ -203,14 +205,16 @@ def get_partidas():
 start_time = timeit.default_timer()
 # get_escudo()
 # get_nomes()
-get_sem_capitao()
-salvar_times_rodadas()
 # salvar_participantes()
-retornar_estats_liga()
-get_partidas()
 
+########################### rodar_tudo
+# get_sem_capitao()
+# salvar_times_rodadas()
+# retornar_estats_liga()
+# get_partidas()
+########################### rodar_tudo
 
-
+# print(get_class_liberta_seg_turno())
 
 # dict_prem = {"primeiro_turno": {"lider": ''},
 #              "liberta_prim_turno": {"campeao": '', "vice": ''},
