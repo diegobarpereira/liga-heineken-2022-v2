@@ -59,10 +59,23 @@ grupo_liberta_seg_turno = [28919430, 1241021, 219929, 18796615,
                            13957925, 1893918, 19190102, 1235701,
                            71375, 315637, 977136, 8912058]
 
-list_oitavas_seg_turno = ['1245808', '44558779', '71375', '44514741', '1241021', '219929', '19190102', '8912058', '48733', '13957925', '1889674', '44509672', '977136', '18796615', '1893918', '3646412']
+# list_oitavas_seg_turno = ['1245808', '44558779', '71375', '44514741', '1241021', '219929', '19190102', '8912058', '48733', '13957925', '1889674', '44509672', '977136', '18796615', '1893918', '3646412']
 
 list_quartas_seg_turno = []
 
 list_semis_seg_turno = []
 
 list_finais_seg_turno = []
+
+dict_matamata = {
+    "oitavas": [],
+    "quartas": [],
+    "semis": [],
+    "finais": []
+}
+with open('static/dict_matamata.json', mode='r') as currentFile:
+    data = currentFile.read().replace('\n', '')
+    for k, v in json.loads(data).items():
+        dict_prem[k] = v
+
+list_oitavas_seg_turno = []
