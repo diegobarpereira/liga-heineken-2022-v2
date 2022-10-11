@@ -1,3 +1,4 @@
+import collections
 import json
 import requests
 import cartolafc
@@ -5,6 +6,7 @@ import timeit
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import datetime
 
+from cartolafc.constants import rodadas_oitavas_seg_turno, dict_matamata
 from flask_app import get_class_liberta_seg_turno
 
 api = cartolafc.Api(
@@ -208,11 +210,17 @@ start_time = timeit.default_timer()
 # salvar_participantes()
 
 ########################### rodar_tudo
-# get_sem_capitao()
-# salvar_times_rodadas()
-# retornar_estats_liga()
-# get_partidas()
+
+
+def rodar_tudo():
+    get_sem_capitao()
+    salvar_times_rodadas()
+    retornar_estats_liga()
+    get_partidas()
 ########################### rodar_tudo
+
+
+rodar_tudo()
 
 # print(get_class_liberta_seg_turno())
 
@@ -265,3 +273,5 @@ print(timeit.default_timer() - start_time)
 #         if c == dict_keys[i]:
 #             dict_teste[dict_keys[i]][1].append(v)
 # print(dict_teste)
+
+

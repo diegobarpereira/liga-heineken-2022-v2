@@ -1877,12 +1877,12 @@ def get_liberta_seg_turno():
         with ThreadPoolExecutor(max_workers=40) as executor:
             threads = executor.map(get_parciais, grupo_liberta_seg_turno)
 
-            start_time = timeit.default_timer()
+            # start_time = timeit.default_timer()
 
             for teams in threads:
                 ordered_dict_liberta[str(teams.info.id)].append(teams.pontos)
 
-            print(timeit.default_timer() - start_time)
+            # print(timeit.default_timer() - start_time)
 
         for chave, valor in ordered_dict_liberta.items():
             for c, v in json.loads(escudos).items():
@@ -2335,64 +2335,68 @@ def oitavas_de_final_seg_turno():
     for item in list_oitavas_seg_turno:
         ordered_dict_oitavas[str(item)] = novo_dict_oitavas[str(item)]
 
-    # for chave, valor in ordered_dict_oitavas.items():
-    #     for c, v in json.loads(escudos).items():
-    #         for id, nome in json.loads(nomes).items():
-    #             if chave == c:
-    #                 if chave == id:
-    #                     dict_oitavas_pts[nome] = [v, valor]
-    #
-    # if api.mercado().status.nome == 'Mercado fechado':
-    #     with ThreadPoolExecutor(max_workers=40) as executor:
-    #         threads = executor.map(api.time_parcial, list_oitavas_seg_turno)
-    #
-    #     for teams in threads:
-    #         dict_oitavas_pts[teams.info.nome].append(teams.pontos)
-    #
-    # for key, value in dict_oitavas_pts.items():
-    #     if not value[1]:
-    #         oitavas.append([key, value[0], 0.00, 0.00])
-    #     else:
-    #         if len(value[1]) == 1:
-    #             oitavas.append([key, value[0], value[1][0], 0.00])
-    #         else:
-    #             oitavas.append([key, value[0], value[1][0], value[1][1]])
+    for chave, valor in ordered_dict_oitavas.items():
+        for c, v in json.loads(escudos).items():
+            for id, nome in json.loads(nomes).items():
+                if chave == c:
+                    if chave == id:
+                        dict_oitavas_pts[nome] = [v, valor]
 
     if api.mercado().status.nome == 'Mercado fechado':
-
         with ThreadPoolExecutor(max_workers=40) as executor:
-            threads = executor.map(get_parciais, list_oitavas_seg_turno)
+            threads = executor.map(api.time_parcial, list_oitavas_seg_turno)
 
-            for teams in threads:
-                ordered_dict_oitavas[str(teams.info.id)].append(teams.pontos)
+        for teams in threads:
+            dict_oitavas_pts[teams.info.nome][1].append(teams.pontos)
 
-        for chave, valor in ordered_dict_oitavas.items():
-            for c, v in json.loads(escudos).items():
-                for id, nome in json.loads(nomes).items():
-                    if chave == c:
-                        if chave == id:
-                            dict_oitavas_pts[nome] = [v, valor]
-
-        for key, value in dict_oitavas_pts.items():
-            if rod == 31:
-                oitavas.append([key, value[0], value[1][2], value[1][1]])
-            if rod == 32:
-                oitavas.append([key, value[0], value[1][0], value[1][2]])
-
-    if api.mercado().status.nome == 'Mercado aberto':
-
-        for chave, valor in ordered_dict_oitavas.items():
-            for c, v in json.loads(escudos).items():
-                for id, nome in json.loads(nomes).items():
-                    if chave == c:
-                        if chave == id:
-                            dict_oitavas_pts[nome] = [v, valor]
-
-        for key, value in dict_oitavas_pts.items():
+    for key, value in dict_oitavas_pts.items():
+        # if not value[1]:
+        #     oitavas.append([key, value[0], 0.00, 0.00])
+        # else:
+        #     if len(value[1]) == 1:
+        #         oitavas.append([key, value[0], value[1][0], 0.00])
+        #     else:
+        #         oitavas.append([key, value[0], value[1][0], value[1][1]])
+        if rod == 31:
+            oitavas.append([key, value[0], value[1][2], value[1][1]])
+        if rod == 32:
+            oitavas.append([key, value[0], value[1][0], value[1][2]])
+        if rod == 33:
             oitavas.append([key, value[0], value[1][0], value[1][1]])
 
 
-
+    # if api.mercado().status.nome == 'Mercado fechado':
+    #
+    #     with ThreadPoolExecutor(max_workers=40) as executor:
+    #         threads = executor.map(get_parciais, list_oitavas_seg_turno)
+    #
+    #         for teams in threads:
+    #             ordered_dict_oitavas[str(teams.info.id)].append(teams.pontos)
+    #
+    #     for chave, valor in ordered_dict_oitavas.items():
+    #         for c, v in json.loads(escudos).items():
+    #             for id, nome in json.loads(nomes).items():
+    #                 if chave == c:
+    #                     if chave == id:
+    #                         dict_oitavas_pts[nome] = [v, valor]
+    #
+    #     for key, value in dict_oitavas_pts.items():
+    #         if rod == 31:
+    #             oitavas.append([key, value[0], value[1][2], value[1][1]])
+    #         if rod == 32:
+    #             oitavas.append([key, value[0], value[1][0], value[1][2]])
+    #
+    # if api.mercado().status.nome == 'Mercado aberto':
+    #
+    #     for chave, valor in ordered_dict_oitavas.items():
+    #         for c, v in json.loads(escudos).items():
+    #             for id, nome in json.loads(nomes).items():
+    #                 if chave == c:
+    #                     if chave == id:
+    #                         dict_oitavas_pts[nome] = [v, valor]
+    #
+    #     for key, value in dict_oitavas_pts.items():
+    #         oitavas.append([key, value[0], value[1][0], value[1][1]])
 
     jogos_oitavas_a = []
     jogos_oitavas_a.append(
