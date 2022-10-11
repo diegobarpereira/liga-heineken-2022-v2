@@ -16,7 +16,6 @@ from cartolafc.constants import rodadas_campeonato, rodadas_primeiro_turno, roda
     list_finais_prim_turno, dict_prem, rodadas_liberta_seg_turno, grupo_liberta_seg_turno, rodadas_oitavas_seg_turno, \
     list_oitavas_seg_turno, dict_matamata
 
-
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
 api = cartolafc.Api(
@@ -224,8 +223,6 @@ def matamata_seg_page():
     # get_list4 = qua_b, get_list5 = semi_a, get_list6 = semi_b, get_list7 = final_a,
     # get_list8 = final_b, esq_maior = esq_maior, campeao = campeao, vice = vice, final = final
     return render_template('matamata_seg_turno.html', get_list1=oit_a, get_list2=oit_b)
-
-
 
 
 def get_times_campeonato():
@@ -455,7 +452,6 @@ def pontos():
 
 
 def liga_class():
-
     dict_prim_turno = {}
     dict_prim_turno_pts = {}
     primeiro_turno_ = {}
@@ -1821,7 +1817,6 @@ def get_parciais(time_id):
 
 
 def get_liberta_seg_turno():
-
     dict_liberta_ = collections.defaultdict(list)
     dict_liberta_pts = {}
     dict_liberta = {}
@@ -2360,10 +2355,10 @@ def oitavas_de_final_seg_turno():
         if rod == 31:
             oitavas.append([key, value[0], value[1][2], value[1][1]])
         if rod == 32:
-            oitavas.append([key, value[0], value[1][0], value[1][2]])
+            oitavas.append([key, value[0], value[1][0], value[1][2] if api.mercado().status.nome ==
+                                                                       'Mercado fechado' else value[1][1]])
         if rod == 33:
             oitavas.append([key, value[0], value[1][0], value[1][1]])
-
 
     # if api.mercado().status.nome == 'Mercado fechado':
     #
