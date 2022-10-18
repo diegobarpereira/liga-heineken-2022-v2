@@ -1,7 +1,6 @@
 import collections
 import json
 import os
-import timeit
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import numpy as np
@@ -14,7 +13,7 @@ from cartolafc.constants import rodadas_campeonato, rodadas_primeiro_turno, roda
     rodadas_quartas_prim_turno, list_quartas_prim_turno, rodadas_semis_prim_turno, list_semis_prim_turno, \
     rodadas_finais_prim_turno, \
     list_finais_prim_turno, dict_prem, rodadas_liberta_seg_turno, grupo_liberta_seg_turno, rodadas_oitavas_seg_turno, \
-    list_oitavas_seg_turno, dict_matamata
+    dict_matamata
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -2291,10 +2290,18 @@ def oitavas_de_final_seg_turno():
     oitavas = []
     dict_matamata_oitavas = {}
 
-    dict_matamata['oitavas'] = get_class_liberta_seg_turno()
-
-    with open(f'static/dict_matamata.json', 'w') as f:
-        json.dump(dict_matamata, f)
+    # dict_matamata['oitavas'] = get_class_liberta_seg_turno()
+    #
+    # with open(f'static/dict_matamata.json', 'w') as f:
+    #     json.dump(dict_matamata, f)
+    #
+    # with open('static/dict_matamata.json', encoding='utf-8', mode='r') as currentFile:
+    #     data_matamata = currentFile.read().replace('\n', '')
+    #
+    #     for x, y in json.loads(data_matamata).items():
+    #         dict_matamata_oitavas[x] = y
+    #
+    # list_oitavas_seg_turno = dict_matamata_oitavas['oitavas']
 
     with open('static/dict_matamata.json', encoding='utf-8', mode='r') as currentFile:
         data_matamata = currentFile.read().replace('\n', '')
@@ -2302,7 +2309,16 @@ def oitavas_de_final_seg_turno():
         for x, y in json.loads(data_matamata).items():
             dict_matamata_oitavas[x] = y
 
-    list_oitavas_seg_turno = dict_matamata_oitavas['oitavas']
+    if len(dict_matamata_oitavas['oitavas']) == 0:
+        dict_matamata['oitavas'] = get_class_liberta_seg_turno()
+
+        with open(f'static/dict_matamata.json', 'w') as f:
+            json.dump(dict_matamata, f)
+
+        list_oitavas_seg_turno = dict_matamata['oitavas']
+
+    else:
+        list_oitavas_seg_turno = dict_matamata_oitavas['oitavas']
 
     with open('static/escudos.json', encoding='utf-8', mode='r') as currentFile:
         escudos = currentFile.read().replace('\n', '')
@@ -2340,6 +2356,7 @@ def oitavas_de_final_seg_turno():
     if api.mercado().status.nome == 'Mercado fechado':
         with ThreadPoolExecutor(max_workers=40) as executor:
             threads = executor.map(api.time_parcial, list_oitavas_seg_turno)
+            # threads = executor.map(get_parciais, list_oitavas_seg_turno)
 
         for teams in threads:
             dict_oitavas_pts[teams.info.nome][1].append(teams.pontos)
@@ -2352,13 +2369,19 @@ def oitavas_de_final_seg_turno():
         #         oitavas.append([key, value[0], value[1][0], 0.00])
         #     else:
         #         oitavas.append([key, value[0], value[1][0], value[1][1]])
-        if rod == 31:
-            oitavas.append([key, value[0], value[1][2], value[1][1]])
-        if rod == 32:
-            oitavas.append([key, value[0], value[1][0], value[1][2] if api.mercado().status.nome ==
-                                                                       'Mercado fechado' else value[1][1]])
-        if rod == 33:
-            oitavas.append([key, value[0], value[1][0], value[1][1]])
+        # if rod == 31:
+        #     oitavas.append([key, value[0], value[1][2], value[1][1]])
+        # if rod == 32:
+        #     oitavas.append([key, value[0], value[1][0], value[1][2] if api.mercado().status.nome ==
+        #                                                                'Mercado fechado' else value[1][1]])
+        # if rod == 33:
+        #     oitavas.append([key, value[0], value[1][0], value[1][1]])
+
+        oitavas.append([key,
+                        value[0],
+                        value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 31 else value[1][0],
+                        value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 32 else value[1][1]]
+                       )
 
     # if api.mercado().status.nome == 'Mercado fechado':
     #

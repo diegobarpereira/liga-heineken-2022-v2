@@ -221,6 +221,34 @@ def rodar_tudo():
 
 
 rodar_tudo()
+#
+# dict_matamata_oitavas = {}
+# # list_oitavas_seg_turno = []
+#
+# # if not dict_matamata['oitavas']:
+# #     dict_matamata['oitavas'] = get_class_liberta_seg_turno()
+# #
+# #     with open(f'static/dict_matamata.json', 'w') as f:
+# #         json.dump(dict_matamata, f)
+#
+# with open('static/dict_matamata.json', encoding='utf-8', mode='r') as currentFile:
+#     data_matamata = currentFile.read().replace('\n', '')
+#
+#     for x, y in json.loads(data_matamata).items():
+#         dict_matamata_oitavas[x] = y
+#
+# if len(dict_matamata_oitavas['oitavas']) == 0:
+#     dict_matamata['oitavas'] = get_class_liberta_seg_turno()
+#
+#     with open(f'static/dict_matamata.json', 'w') as f:
+#         json.dump(dict_matamata, f)
+#
+#     list_oitavas_seg_turno = dict_matamata['oitavas']
+#
+# else:
+#     list_oitavas_seg_turno = dict_matamata_oitavas['oitavas']
+#
+# print(list_oitavas_seg_turno)
 
 # print(get_class_liberta_seg_turno())
 

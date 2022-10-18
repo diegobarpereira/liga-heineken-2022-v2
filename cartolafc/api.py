@@ -283,13 +283,15 @@ class Api(object):
         url = '{api_url}/mercado/selecao'.format(api_url=self._api_url)
         data = self._request(url)
         # return [Capitaes.from_dict(capitaes) for capitaes in data['capitaes']]
-        return sorted([Capitaes.from_dict(capitaes) for capitaes in data['capitaes']], key=lambda p: p.escalacoes, reverse=True)
+        return sorted([Capitaes.from_dict(capitaes) for capitaes in data['capitaes']], key=lambda p: p.escalacoes,
+                      reverse=True)
 
     def reservas(self) -> List[Reservas]:
         url = '{api_url}/mercado/selecao'.format(api_url=self._api_url)
         data = self._request(url)
         # return [Reservas.from_dict(reservas) for reservas in data['reservas']]
-        return sorted([Reservas.from_dict(reservas) for reservas in data['reservas']], key=lambda p: p.escalacoes, reverse=True)
+        return sorted([Reservas.from_dict(reservas) for reservas in data['reservas']], key=lambda p: p.escalacoes,
+                      reverse=True)
 
     def time(self, time_id: Optional[int] = None, nome: Optional[str] = None, slug: Optional[str] = None,
              as_json: bool = False, rodada: Optional[int] = 0) -> Union[Time, dict]:
@@ -401,7 +403,7 @@ class Api(object):
                         if atleta.clube != '' and (
                                 atleta.clube.nome == partida.clube_casa.nome or atleta.clube.nome == partida.clube_visitante.nome):
                             # if partida.fim_de_jogo == 'veja como foi':
-                            if partida.status_transmissao_tr == 'ENCERRADA':
+                            if partida.status_transmissao_tr == 'ENCERRADA' or not partida.valida:
                                 jogo_finalizou = True
                             else:
                                 jogo_finalizou = False
