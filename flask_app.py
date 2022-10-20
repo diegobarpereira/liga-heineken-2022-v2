@@ -13,7 +13,7 @@ from cartolafc.constants import rodadas_campeonato, rodadas_primeiro_turno, roda
     rodadas_quartas_prim_turno, list_quartas_prim_turno, rodadas_semis_prim_turno, list_semis_prim_turno, \
     rodadas_finais_prim_turno, \
     list_finais_prim_turno, dict_prem, rodadas_liberta_seg_turno, grupo_liberta_seg_turno, rodadas_oitavas_seg_turno, \
-    dict_matamata
+    dict_matamata, rodadas_quartas_seg_turno
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -204,7 +204,7 @@ def liberta_segundo_turno():
 @app.route('/matamatasegturno')
 def matamata_seg_page():
     # oit_a, oit_b, qua_a, qua_b, semi_a, semi_b, final_a, final_b, esq_maior = mata_mata_prim_turno()
-    oit_a, oit_b = mata_mata_seg_turno()
+    oit_a, oit_b, qua_a, qua_b = mata_mata_seg_turno()
     # final = True
     #
     # campeao = []
@@ -221,7 +221,8 @@ def matamata_seg_page():
     # , get_list3 = qua_a,
     # get_list4 = qua_b, get_list5 = semi_a, get_list6 = semi_b, get_list7 = final_a,
     # get_list8 = final_b, esq_maior = esq_maior, campeao = campeao, vice = vice, final = final
-    return render_template('matamata_seg_turno.html', get_list1=oit_a, get_list2=oit_b)
+    return render_template('matamata_seg_turno.html', get_list1=oit_a, get_list2=oit_b, get_list3=qua_a,
+                           get_list4=qua_b)
 
 
 def get_times_campeonato():
@@ -2448,9 +2449,161 @@ def oitavas_de_final_seg_turno():
     return jogos_oitavas_a, jogos_oitavas_b
 
 
+def get_class_oitavas_seg_turno():
+    jogos_oitavas_a, jogos_oitavas_b = oitavas_de_final_seg_turno()
+
+    oitavas_a = jogos_oitavas_a
+    oitavas_b = jogos_oitavas_b
+
+    dict_nomes = {}
+    with open('static/nomes.json', encoding='utf-8', mode='r') as currentFile:
+        nomes = currentFile.read().replace('\n', '')
+
+        for k, v in json.loads(nomes).items():
+            dict_nomes[k] = v
+
+    oit_a = {}
+    for item in oitavas_a:
+        if item[2] in oit_a or item[6] in oit_a:
+            oit_a[item[2]].append([item[0], item[3]])
+            oit_a[item[6]].append([item[4], item[7]])
+        else:
+            oit_a[item[2]] = [item[0], item[3]]
+            oit_a[item[6]] = [item[4], item[7]]
+
+    oit_b = {}
+    for item in oitavas_b:
+        if item[2] in oit_b or item[6] in oit_b:
+            oit_b[item[2]].append([item[0], item[3]])
+            oit_b[item[6]].append([item[4], item[7]])
+        else:
+            oit_b[item[2]] = [item[0], item[3]]
+            oit_b[item[6]] = [item[4], item[7]]
+
+    times_a = []
+    for key, value in oit_a.items():
+        times_a.append([key, value])
+
+    times_b = []
+    for key, value in oit_b.items():
+        times_b.append([key, value])
+
+    data1 = sorted(times_a[0:2], key=lambda x: (x[1][0] + x[1][1], x[1][0] + x[1][1]), reverse=True)
+    data2 = sorted(times_a[2:4], key=lambda x: (x[1][0] + x[1][1], x[1][0] + x[1][1]), reverse=True)
+    data3 = sorted(times_a[4:6], key=lambda x: (x[1][0] + x[1][1], x[1][0] + x[1][1]), reverse=True)
+    data4 = sorted(times_a[6:8], key=lambda x: (x[1][0] + x[1][1], x[1][0] + x[1][1]), reverse=True)
+
+    data5 = sorted(times_b[0:2], key=lambda x: (x[1][0] + x[1][1], x[1][0] + x[1][1]), reverse=True)
+    data6 = sorted(times_b[2:4], key=lambda x: (x[1][0] + x[1][1], x[1][0] + x[1][1]), reverse=True)
+    data7 = sorted(times_b[4:6], key=lambda x: (x[1][0] + x[1][1], x[1][0] + x[1][1]), reverse=True)
+    data8 = sorted(times_b[6:8], key=lambda x: (x[1][0] + x[1][1], x[1][0] + x[1][1]), reverse=True)
+
+    quartas = [data1[0][0], data2[0][0], data3[0][0], data4[0][0], data5[0][0], data6[0][0], data7[0][0], data8[0][0]]
+
+    list_quartas = []
+    for x in range(len(quartas)):
+        for ids, nomes in dict_nomes.items():
+            if quartas[x] in nomes:
+                list_quartas.append(ids)
+
+    return list_quartas
+
+
+def quartas_de_final_seg_turno():
+    dict_quartas_ = collections.defaultdict(list)
+    dict_quartas_pts = {}
+    ordered_dict_quartas = {}
+    quartas = []
+    dict_matamata_quartas = {}
+
+    with open('static/dict_matamata.json', encoding='utf-8', mode='r') as currentFile:
+        data_matamata = currentFile.read().replace('\n', '')
+
+        for x, y in json.loads(data_matamata).items():
+            dict_matamata_quartas[x] = y
+
+    if len(dict_matamata_quartas['quartas']) == 0:
+        dict_matamata['quartas'] = get_class_oitavas_seg_turno()
+
+        with open(f'static/dict_matamata.json', 'w') as f:
+            json.dump(dict_matamata, f)
+
+        list_quartas_seg_turno = dict_matamata['quartas']
+
+    else:
+        list_quartas_seg_turno = dict_matamata_quartas['quartas']
+
+    with open('static/escudos.json', encoding='utf-8', mode='r') as currentFile:
+        escudos = currentFile.read().replace('\n', '')
+
+    with open('static/nomes.json', encoding='utf-8', mode='r') as currentFile:
+        nomes = currentFile.read().replace('\n', '')
+
+    for rod_qua in rodadas_quartas_seg_turno:
+
+        if str(rod_qua) in get_times_rodada():
+            for key, v in get_times_rodada()['1'].items():
+                adict = get_times_rodada()[str(rod_qua)]
+                dict_quartas_[key].append(adict[key])
+
+        else:
+            for key, v in get_times_rodada()['1'].items():
+                dict_quartas_[key].append(0.00)
+
+    novo_dict_quartas = dict(dict_quartas_)
+
+    for time_id in list(novo_dict_quartas):
+        if time_id not in list_quartas_seg_turno:
+            novo_dict_quartas.pop(str(time_id))
+
+    for item in list_quartas_seg_turno:
+        ordered_dict_quartas[str(item)] = novo_dict_quartas[str(item)]
+
+    for chave, valor in ordered_dict_quartas.items():
+        for c, v in json.loads(escudos).items():
+            for id, nome in json.loads(nomes).items():
+                if chave == c:
+                    if chave == id:
+                        dict_quartas_pts[nome] = [v, valor]
+
+    if api.mercado().status.nome == 'Mercado fechado':
+        with ThreadPoolExecutor(max_workers=40) as executor:
+            threads = executor.map(api.time_parcial, list_quartas_seg_turno)
+            # threads = executor.map(get_parciais, list_oitavas_seg_turno)
+
+        for teams in threads:
+            dict_quartas_pts[teams.info.nome][1].append(teams.pontos)
+
+    for key, value in dict_quartas_pts.items():
+        quartas.append([key,
+                        value[0],
+                        value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 33 else value[1][0],
+                        value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 34 else value[1][1]]
+                       )
+
+    jogos_quartas_a = []
+    jogos_quartas_a.append(
+        [quartas[0][2], quartas[0][1], quartas[0][0], quartas[0][3], quartas[1][2], quartas[1][1], quartas[1][0],
+         quartas[1][3]])
+    jogos_quartas_a.append(
+        [quartas[2][2], quartas[2][1], quartas[2][0], quartas[2][3], quartas[3][2], quartas[3][1], quartas[3][0],
+         quartas[3][3]])
+
+    jogos_quartas_b = []
+    jogos_quartas_b.append(
+        [quartas[4][3], quartas[4][1], quartas[4][0], quartas[4][2], quartas[5][3], quartas[5][1], quartas[5][0],
+         quartas[5][2]])
+    jogos_quartas_b.append(
+        [quartas[6][3], quartas[6][1], quartas[6][0], quartas[6][2], quartas[7][3], quartas[7][1], quartas[7][0],
+         quartas[7][2]])
+
+    # print(jogos_quartas_a, jogos_quartas_b)
+    return jogos_quartas_a, jogos_quartas_b
+
+
 def mata_mata_seg_turno():
     jogos_oitavas_a, jogos_oitavas_b = oitavas_de_final_seg_turno()
-    # jogos_quartas_a, jogos_quartas_b = quartas_de_final_prim_turno()
+    jogos_quartas_a, jogos_quartas_b = quartas_de_final_seg_turno()
     # jogos_semis_a, jogos_semis_b = semi_finais_prim_turno()
     # jogos_final_a, jogos_final_b, esq_maior = finais_prim_turno()
     # campeao_prim_turno = ''
@@ -2472,7 +2625,7 @@ def mata_mata_seg_turno():
 
     # print(jogos_oitavas_a, jogos_oitavas_b, jogos_quartas_a, jogos_quartas_b, jogos_semis_a, jogos_semis_b, jogos_final_a, jogos_final_b, esq_maior)
     # return jogos_oitavas_a, jogos_oitavas_b, jogos_quartas_a, jogos_quartas_b, jogos_semis_a, jogos_semis_b, jogos_final_a, jogos_final_b, esq_maior
-    return jogos_oitavas_a, jogos_oitavas_b
+    return jogos_oitavas_a, jogos_oitavas_b, jogos_quartas_a, jogos_quartas_b
 
 
 if __name__ == '__main__':

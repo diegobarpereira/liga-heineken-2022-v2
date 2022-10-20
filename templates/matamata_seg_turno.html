@@ -136,66 +136,66 @@ vertical-align: middle;
 		<th colspan="4"> Quartas </th>
 		</tr>
 
-<!--			<tr style="display:inline-block;vertical-align:middle;">-->
-<!--		{% for key in get_list3 %}-->
+			<tr style="display:inline-block;vertical-align:middle;">
+		{% for key in get_list3 %}
+			<tr><td colspan="4" style='border:none;'> </td></tr>
+			<tr><td colspan="4" style='border:none;'> </td></tr>
+			<tr><td colspan="4" style='border:none;'> </td></tr>
+
+			{% if key[0] + key[3] > key[4] + key[7] %}
+
+			<td class="middle border-lb" style="color:yellow;">{{"%.2f"|format(key[0])}}</td>
+			<td class="middle border-udb"><img src="{{ key[1] }}" width="30" height="30"></td>
+			<td class="middle border-udb" style="color:yellow;">{{key[2]}}</td>
+			<td class="middle border-rb" style="color:yellow;">{{"%.2f"|format(key[3])}}</td>
+
+			{% else %}
+
+			<td class="middle border-lb" style="color:white;">{{"%.2f"|format(key[0])}}</td>
+			<td class="middle border-udb"><img src="{{ key[1] }}" width="30" height="30"></td>
+			<td class="middle border-udb" style="color:white;">{{key[2]}}</td>
+			<td class="middle border-rb" style="color:white;">{{"%.2f"|format(key[3])}}</td>
+
+			{% endif %}
+
+
+			</tr>
+			<tr><td colspan="4" style='border:none;'> {{"%.2f"|format(key[0] + key[3])}} </td></tr>
+			<tr><td colspan="4" style='border:none;'> </td></tr>
+			<tr><td colspan="4" style='border:none;'> </td></tr>
+			<tr><td colspan="4" style='border:none;'>X</td></tr>
+			<tr><td colspan="4" style='border:none;'> </td></tr>
+			<tr><td colspan="4" style='border:none;'> </td></tr>
 <!--			<tr><td colspan="4" style='border:none;'> </td></tr>-->
+			<tr>
+
+			{% if key[4] + key[7] > key[0] + key[3] %}
+
+			<td class="middle border-lb" style="color:yellow;">{{"%.2f"|format(key[4])}}</td>
+			<td class="middle border-udb"><img src="{{ key[5] }}" width="30" height="30"></td>
+			<td class="middle border-udb" style="color:yellow;">{{key[6]}}</td>
+			<td class="middle border-rb" style="color:yellow;">{{"%.2f"|format(key[7])}}</td>
+
+			{% else %}
+
+			<td class="middle border-lb" style="color:white;">{{"%.2f"|format(key[4])}}</td>
+			<td class="middle border-udb"><img src="{{ key[5] }}" width="30" height="30"></td>
+			<td class="middle border-udb" style="color:white;">{{key[6]}}</td>
+			<td class="middle border-rb" style="color:white;">{{"%.2f"|format(key[7])}}</td>
+
+			{% endif %}
+
+
+			<tr><td colspan="4" style='border:none;'> {{"%.2f"|format(key[4] + key[7])}} </td></tr>
+			<tr><td colspan="4" style='border:none;'> </td></tr>
+			<tr><td colspan="4" style='border:none;'> </td></tr>
+			<tr><td colspan="4" style='border:none;'> </td></tr>
 <!--			<tr><td colspan="4" style='border:none;'> </td></tr>-->
-<!--			<tr><td colspan="4" style='border:none;'> </td></tr>-->
+			<tr><td colspan="4" style='border:none;'> </td></tr>
 
-<!--			{% if key[0] + key[3] > key[4] + key[7] %}-->
-
-<!--			<td class="middle border-lb" style="color:yellow;">{{"%.2f"|format(key[0])}}</td>-->
-<!--			<td class="middle border-udb"><img src="{{ key[1] }}" width="30" height="30"></td>-->
-<!--			<td class="middle border-udb" style="color:yellow;">{{key[2]}}</td>-->
-<!--			<td class="middle border-rb" style="color:yellow;">{{"%.2f"|format(key[3])}}</td>-->
-
-<!--			{% else %}-->
-
-<!--			<td class="middle border-lb" style="color:white;">{{"%.2f"|format(key[0])}}</td>-->
-<!--			<td class="middle border-udb"><img src="{{ key[1] }}" width="30" height="30"></td>-->
-<!--			<td class="middle border-udb" style="color:white;">{{key[2]}}</td>-->
-<!--			<td class="middle border-rb" style="color:white;">{{"%.2f"|format(key[3])}}</td>-->
-
-<!--			{% endif %}-->
-
-
-<!--			</tr>-->
-<!--			<tr><td colspan="4" style='border:none;'> {{"%.2f"|format(key[0] + key[3])}} </td></tr>-->
-<!--			<tr><td colspan="4" style='border:none;'> </td></tr>-->
-<!--			<tr><td colspan="4" style='border:none;'> </td></tr>-->
-<!--			<tr><td colspan="4" style='border:none;'>X</td></tr>-->
-<!--			<tr><td colspan="4" style='border:none;'> </td></tr>-->
-<!--			<tr><td colspan="4" style='border:none;'> </td></tr>-->
-<!--&lt;!&ndash;			<tr><td colspan="4" style='border:none;'> </td></tr>&ndash;&gt;-->
-<!--			<tr>-->
-
-<!--			{% if key[4] + key[7] > key[0] + key[3] %}-->
-
-<!--			<td class="middle border-lb" style="color:yellow;">{{"%.2f"|format(key[4])}}</td>-->
-<!--			<td class="middle border-udb"><img src="{{ key[5] }}" width="30" height="30"></td>-->
-<!--			<td class="middle border-udb" style="color:yellow;">{{key[6]}}</td>-->
-<!--			<td class="middle border-rb" style="color:yellow;">{{"%.2f"|format(key[7])}}</td>-->
-
-<!--			{% else %}-->
-
-<!--			<td class="middle border-lb" style="color:white;">{{"%.2f"|format(key[4])}}</td>-->
-<!--			<td class="middle border-udb"><img src="{{ key[5] }}" width="30" height="30"></td>-->
-<!--			<td class="middle border-udb" style="color:white;">{{key[6]}}</td>-->
-<!--			<td class="middle border-rb" style="color:white;">{{"%.2f"|format(key[7])}}</td>-->
-
-<!--			{% endif %}-->
-
-
-<!--			<tr><td colspan="4" style='border:none;'> {{"%.2f"|format(key[4] + key[7])}} </td></tr>-->
-<!--			<tr><td colspan="4" style='border:none;'> </td></tr>-->
-<!--			<tr><td colspan="4" style='border:none;'> </td></tr>-->
-<!--			<tr><td colspan="4" style='border:none;'> </td></tr>-->
-<!--&lt;!&ndash;			<tr><td colspan="4" style='border:none;'> </td></tr>&ndash;&gt;-->
-<!--			<tr><td colspan="4" style='border:none;'> </td></tr>-->
-
-<!--			</tr>-->
-<!--		{% endfor %}-->
-<!--			</tr>-->
+			</tr>
+		{% endfor %}
+			</tr>
 
 	</table>
 	</td>
