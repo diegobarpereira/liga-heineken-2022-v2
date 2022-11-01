@@ -13,7 +13,7 @@ from cartolafc.constants import rodadas_campeonato, rodadas_primeiro_turno, roda
     rodadas_quartas_prim_turno, list_quartas_prim_turno, rodadas_semis_prim_turno, list_semis_prim_turno, \
     rodadas_finais_prim_turno, \
     list_finais_prim_turno, dict_prem, rodadas_liberta_seg_turno, grupo_liberta_seg_turno, rodadas_oitavas_seg_turno, \
-    dict_matamata, rodadas_quartas_seg_turno, rodadas_semis_seg_turno
+    dict_matamata, rodadas_quartas_seg_turno, rodadas_semis_seg_turno, rodadas_finais_seg_turno
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -2673,17 +2673,156 @@ def semi_finais_seg_turno():
 
     jogos_semis_b = []
     jogos_semis_b.append(
-        [semis[2][2], semis[2][1], semis[2][0], semis[2][3], semis[3][2], semis[3][1], semis[3][0],
-         semis[3][3]])
+        [semis[2][3], semis[2][1], semis[2][0], semis[2][2], semis[3][3], semis[3][1], semis[3][0],
+         semis[3][2]])
 
     return jogos_semis_a, jogos_semis_b
+
+
+def get_class_semis_seg_turno():
+    jogos_semis_a, jogos_semis_b = semi_finais_seg_turno()
+    semis_a = jogos_semis_a
+    semis_b = jogos_semis_b
+
+    dict_nomes = {}
+    with open('static/nomes.json', encoding='utf-8', mode='r') as currentFile:
+        nomes = currentFile.read().replace('\n', '')
+
+        for k, v in json.loads(nomes).items():
+            dict_nomes[k] = v
+
+    finais_a = {}
+    for item in semis_a:
+        if item[2] in finais_a or item[6] in finais_a:
+            finais_a[item[2]].append([item[0], item[3]])
+            finais_a[item[6]].append([item[4], item[7]])
+        else:
+            finais_a[item[2]] = [item[0], item[3]]
+            finais_a[item[6]] = [item[4], item[7]]
+
+    finais_b = {}
+    for item in semis_b:
+        if item[2] in finais_b or item[6] in finais_b:
+            finais_b[item[2]].append([item[0], item[3]])
+            finais_b[item[6]].append([item[4], item[7]])
+        else:
+            finais_b[item[2]] = [item[0], item[3]]
+            finais_b[item[6]] = [item[4], item[7]]
+
+    times_finais_a = []
+    for key, value in finais_a.items():
+        times_finais_a.append([key, value])
+
+    times_finais_b = []
+    for key, value in finais_b.items():
+        times_finais_b.append([key, value])
+
+    data1 = sorted(times_finais_a[0:2], key=lambda x: (x[1][0] + x[1][1], x[1][0] + x[1][1]), reverse=True)
+    data2 = sorted(times_finais_b[0:2], key=lambda x: (x[1][0] + x[1][1], x[1][0] + x[1][1]), reverse=True)
+
+    semis = [data1[0][0], data2[0][0]]
+
+    list_finais = []
+    for x in range(len(semis)):
+        for ids, nomes in dict_nomes.items():
+            if semis[x] in nomes:
+                list_finais.append(ids)
+
+    return list_finais
+
+
+def finais_seg_turno():
+    dict_finais_ = collections.defaultdict(list)
+    dict_finais_pts = {}
+    ordered_dict_finais = {}
+    finais = []
+    dict_matamata_finais = {}
+
+    with open('static/dict_matamata.json', encoding='utf-8', mode='r') as currentFile:
+        data_matamata = currentFile.read().replace('\n', '')
+
+        for x, y in json.loads(data_matamata).items():
+            dict_matamata_finais[x] = y
+
+    if len(dict_matamata_finais['finais']) == 0:
+        dict_matamata['finais'] = get_class_quartas_seg_turno()
+
+        with open(f'static/dict_matamata.json', 'w') as f:
+            json.dump(dict_matamata, f)
+
+        list_finais_seg_turno = dict_matamata['finais']
+
+    else:
+        list_finais_seg_turno = dict_matamata_finais['finais']
+
+    with open('static/escudos.json', encoding='utf-8', mode='r') as currentFile:
+        escudos = currentFile.read().replace('\n', '')
+
+    with open('static/nomes.json', encoding='utf-8', mode='r') as currentFile:
+        nomes = currentFile.read().replace('\n', '')
+
+    for rod_finais in rodadas_finais_seg_turno:
+
+        if str(rod_finais) in get_times_rodada():
+            for key, v in get_times_rodada()['1'].items():
+                adict = get_times_rodada()[str(rod_finais)]
+                dict_finais_[key].append(adict[key])
+
+        else:
+            for key, v in get_times_rodada()['1'].items():
+                dict_finais_[key].append(0.00)
+
+    novo_dict_finais = dict(dict_finais_)
+
+    for time_id in list(novo_dict_finais):
+        if time_id not in list_finais_seg_turno:
+            novo_dict_finais.pop(str(time_id))
+
+    for item in list_finais_seg_turno:
+        ordered_dict_finais[str(item)] = novo_dict_finais[str(item)]
+
+    for chave, valor in ordered_dict_finais.items():
+        for c, v in json.loads(escudos).items():
+            for id, nome in json.loads(nomes).items():
+                if chave == c:
+                    if chave == id:
+                        dict_finais_pts[nome] = [v, valor]
+
+    if api.mercado().status.nome == 'Mercado fechado':
+        with ThreadPoolExecutor(max_workers=40) as executor:
+            threads = executor.map(api.time_parcial, list_finais_seg_turno)
+            # threads = executor.map(get_parciais, list_oitavas_seg_turno)
+
+        for teams in threads:
+            dict_finais_pts[teams.info.nome][1].append(teams.pontos)
+
+    for key, value in dict_finais_pts.items():
+        finais.append([key,
+                      value[0],
+                      value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 37 else value[1][0],
+                      value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 38 else value[1][1]]
+                     )
+
+    jogos_final_a = []
+    jogos_final_a.append(
+        [finais[0][2], finais[0][1], finais[0][0], finais[0][3]])
+
+    jogos_final_b = []
+    jogos_final_b.append(
+        [finais[1][3], finais[1][1], finais[1][0], finais[1][2]])
+
+    esq_maior = False
+    if jogos_final_a[0][0] + jogos_final_a[0][3] > jogos_final_b[0][0] + jogos_final_b[0][3]:
+        esq_maior = True
+
+    return jogos_final_a, jogos_final_b, esq_maior
 
 
 def mata_mata_seg_turno():
     jogos_oitavas_a, jogos_oitavas_b = oitavas_de_final_seg_turno()
     jogos_quartas_a, jogos_quartas_b = quartas_de_final_seg_turno()
     jogos_semis_a, jogos_semis_b = semi_finais_seg_turno()
-    # jogos_final_a, jogos_final_b, esq_maior = finais_prim_turno()
+    # jogos_final_a, jogos_final_b, esq_maior = finais_seg_turno()
     # campeao_prim_turno = ''
     # vice_prim_turno = ''
     #
