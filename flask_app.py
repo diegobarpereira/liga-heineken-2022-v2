@@ -204,7 +204,7 @@ def liberta_segundo_turno():
 @app.route('/matamatasegturno')
 def matamata_seg_page():
     # oit_a, oit_b, qua_a, qua_b, semi_a, semi_b, final_a, final_b, esq_maior = mata_mata_prim_turno()
-    oit_a, oit_b, qua_a, qua_b, semi_a, semi_b = mata_mata_seg_turno()
+    oit_a, oit_b, qua_a, qua_b, semi_a, semi_b, final_a, final_b = mata_mata_seg_turno()
     # final = True
     #
     # campeao = []
@@ -222,7 +222,7 @@ def matamata_seg_page():
     # get_list4 = qua_b, get_list5 = semi_a, get_list6 = semi_b, get_list7 = final_a,
     # get_list8 = final_b, esq_maior = esq_maior, campeao = campeao, vice = vice, final = final
     return render_template('matamata_seg_turno.html', get_list1=oit_a, get_list2=oit_b, get_list3=qua_a,
-                           get_list4=qua_b, get_list5=semi_a, get_list6=semi_b)
+                           get_list4=qua_b, get_list5=semi_a, get_list6=semi_b, get_list7=final_a, get_list8=final_b)
 
 
 def get_times_campeonato():
@@ -281,11 +281,13 @@ def retornar_partidas():
                     'Data': partida.data.strftime('%d-%m-%Y %H:%M'),
                     'Local': partida.local,
                     'Escudo_Casa': partida.clube_casa_escudo.escudos,
+                    'Casa_Posicao': str(partida.clube_casa_posicao) + 'º',
                     'Clube_Casa': partida.clube_casa.nome,
                     'Placar_Casa': partida.placar_casa if partida.placar_casa else 0,
                     'X': 'x',
                     'Placar_Visitante': partida.placar_visitante if partida.placar_visitante else 0,
                     'Clube_Visitante': partida.clube_visitante.nome,
+                    'Visitante_Posicao': str(partida.clube_visitante_posicao) + 'º',
                     'Escudo_Visitante': partida.clube_visitante_escudo.escudos
                 }
             else:
@@ -293,11 +295,13 @@ def retornar_partidas():
                     'Data': partida.data.strftime('%d-%m-%Y %H:%M'),
                     'Local': partida.local,
                     'Escudo_Casa': partida.clube_casa_escudo.escudos,
+                    'Casa_Posicao': str(partida.clube_casa_posicao) + 'º',
                     'Clube_Casa': partida.clube_casa.nome,
                     'Placar_Casa': partida.placar_casa if partida.placar_casa else 0,
                     'X': 'x',
                     'Placar_Visitante': partida.placar_visitante if partida.placar_visitante else 0,
                     'Clube_Visitante': partida.clube_visitante.nome,
+                    'Visitante_Posicao': str(partida.clube_visitante_posicao) + 'º',
                     'Escudo_Visitante': partida.clube_visitante_escudo.escudos
                 }
 
@@ -307,11 +311,13 @@ def retornar_partidas():
                     'Data': 'Partida não é',
                     'Local': 'valida para a rodada',
                     'Escudo_Casa': partida.clube_casa_escudo.escudos,
+                    'Casa_Posicao': str(partida.clube_casa_posicao) + 'º',
                     'Clube_Casa': partida.clube_casa.nome,
                     'Placar_Casa': partida.placar_casa if partida.placar_casa else 0,
                     'X': 'x',
                     'Placar_Visitante': partida.placar_visitante if partida.placar_visitante else 0,
                     'Clube_Visitante': partida.clube_visitante.nome,
+                    'Visitante_Posicao': str(partida.clube_visitante_posicao) + 'º',
                     'Escudo_Visitante': partida.clube_visitante_escudo.escudos
                 }
             else:
@@ -319,11 +325,13 @@ def retornar_partidas():
                     'Data': 'Partida não é',
                     'Local': 'valida para a rodada',
                     'Escudo_Casa': partida.clube_casa_escudo.escudos,
+                    'Casa_Posicao': str(partida.clube_casa_posicao) + 'º',
                     'Clube_Casa': partida.clube_casa.nome,
                     'Placar_Casa': partida.placar_casa if partida.placar_casa else 0,
                     'X': 'x',
                     'Placar_Visitante': partida.placar_visitante if partida.placar_visitante else 0,
                     'Clube_Visitante': partida.clube_visitante.nome,
+                    'Visitante_Posicao': str(partida.clube_visitante_posicao) + 'º',
                     'Escudo_Visitante': partida.clube_visitante_escudo.escudos
                 }
 
@@ -2745,7 +2753,7 @@ def finais_seg_turno():
             dict_matamata_finais[x] = y
 
     if len(dict_matamata_finais['finais']) == 0:
-        dict_matamata['finais'] = get_class_quartas_seg_turno()
+        dict_matamata['finais'] = get_class_semis_seg_turno()
 
         with open(f'static/dict_matamata.json', 'w') as f:
             json.dump(dict_matamata, f)
@@ -2822,7 +2830,7 @@ def mata_mata_seg_turno():
     jogos_oitavas_a, jogos_oitavas_b = oitavas_de_final_seg_turno()
     jogos_quartas_a, jogos_quartas_b = quartas_de_final_seg_turno()
     jogos_semis_a, jogos_semis_b = semi_finais_seg_turno()
-    # jogos_final_a, jogos_final_b, esq_maior = finais_seg_turno()
+    jogos_final_a, jogos_final_b, esq_maior = finais_seg_turno()
     # campeao_prim_turno = ''
     # vice_prim_turno = ''
     #
@@ -2842,7 +2850,7 @@ def mata_mata_seg_turno():
 
     # print(jogos_oitavas_a, jogos_oitavas_b, jogos_quartas_a, jogos_quartas_b, jogos_semis_a, jogos_semis_b, jogos_final_a, jogos_final_b, esq_maior)
     # return jogos_oitavas_a, jogos_oitavas_b, jogos_quartas_a, jogos_quartas_b, jogos_semis_a, jogos_semis_b, jogos_final_a, jogos_final_b, esq_maior
-    return jogos_oitavas_a, jogos_oitavas_b, jogos_quartas_a, jogos_quartas_b, jogos_semis_a, jogos_semis_b
+    return jogos_oitavas_a, jogos_oitavas_b, jogos_quartas_a, jogos_quartas_b, jogos_semis_a, jogos_semis_b, jogos_final_a, jogos_final_b
 
 
 if __name__ == '__main__':

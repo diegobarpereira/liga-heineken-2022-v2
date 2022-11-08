@@ -33,7 +33,7 @@ rodadas_liberta_seg_turno = range(25, 31)
 rodadas_oitavas_seg_turno = range(31, 33)
 rodadas_quartas_seg_turno = range(33, 35)
 rodadas_semis_seg_turno = range(35, 37)
-rodadas_finais_seg_turno = range(37, 38)
+rodadas_finais_seg_turno = range(37, 39)
 
 grupo_liberta_prim_turno = [8912058, 44558779, 14439636, 71375,
                             18796615, 25588958, 25582672, 1245808,

@@ -297,7 +297,7 @@ class Partida(BaseModel):
     def __init__(self, data: datetime, local: str, valida: bool, clube_casa: Clube, placar_casa: int,
                  clube_visitante: Clube,
                  placar_visitante: int, fim_de_jogo: str, status_transmissao_tr: str,
-                 clube_casa_escudo: Clube, clube_visitante_escudo: Clube) -> None:
+                 clube_casa_escudo: Clube, clube_visitante_escudo: Clube, clube_casa_posicao: int, clube_visitante_posicao: int) -> None:
         self.data = data
         self.local = local
         self.valida = valida
@@ -309,6 +309,8 @@ class Partida(BaseModel):
         self.status_transmissao_tr = status_transmissao_tr
         self.clube_casa_escudo = clube_casa_escudo
         self.clube_visitante_escudo = clube_visitante_escudo
+        self.clube_casa_posicao = clube_casa_posicao
+        self.clube_visitante_posicao = clube_visitante_posicao
 
     @classmethod
     def from_dict(cls, data: dict, clubes: Dict[int, Clube]) -> 'Partida':
@@ -323,9 +325,11 @@ class Partida(BaseModel):
         status_transmissao_tr = data['status_transmissao_tr']
         clube_casa_escudo = clubes[data['clube_casa_id']]
         clube_visitante_escudo = clubes[data['clube_visitante_id']]
+        clube_casa_posicao = data['clube_casa_posicao']
+        clube_visitante_posicao = data['clube_visitante_posicao']
 
         return cls(data_, local, valida, clube_casa, placar_casa, clube_visitante, placar_visitante, fim_de_jogo,
-                   status_transmissao_tr, clube_casa_escudo, clube_visitante_escudo)
+                   status_transmissao_tr, clube_casa_escudo, clube_visitante_escudo, clube_casa_posicao, clube_visitante_posicao)
 
 
 class PontuacaoInfo(BaseModel):
