@@ -853,20 +853,63 @@ def premiacao():
     for time in rar:
         dict_rar_[time] = {'qtde': 0, 'valor': 0.00}
 
-    for rod_ in max_val:
+    for ganhador in max_val:
 
-        if rod_ in dict_rar_:
-            dict_rar_[rod_]['qtde'] = max_val.count(rod_)
-            dict_rar_[rod_]['valor'] = float("{:.2f}".format(len(rar) * max_val.count(rod_) * 2))
-
-        if "/" in rod_:
-            dividido = rod_.split(" / ")
-
+        if not "/" in ganhador:
+            dict_rar_[ganhador]['qtde'] += 1
+            dict_rar_[ganhador]['valor'] += float("{:.2f}".format(len(rar) * 1 * 2))
+        else:
+            dividido = ganhador.split(" / ")
             for r in dividido:
-                if r in dict_rar_:
-                    dict_rar_[r]['qtde'] = max_val.count(rod_) + max_val.count(rod_)
-                    dict_rar_[r]['valor'] = float("{:.2f}".format(len(rar) * max_val.count(rod_) * 2)) + float(
-                        "{:.2f}".format(len(rar) * max_val.count(rod_) * 1))
+                dict_rar_[r]['qtde'] += 1
+                dict_rar_[r]['valor'] += float("{:.2f}".format(len(rar) * 1 * 1))
+
+
+    print(dict_rar_)
+
+
+
+    # for rod_ in max_val:
+    #
+    #     # if rod_ in dict_rar_:
+    #     #     dict_rar_[rod_]['qtde'] = max_val.count(rod_)
+    #     #     dict_rar_[rod_]['valor'] = float("{:.2f}".format(len(rar) * max_val.count(rod_) * 2))
+    #
+    #     if "/" in rod_:
+    #
+    #         dividido = rod_.split(" / ")
+    #
+    #         dict_rar_[dividido[0]].update({'qtde': max_val.count(rod_)})
+    #         dict_rar_[dividido[0]].update(
+    #             {'valor': float("{:.2f}".format(len(rar) * max_val.count(dividido[0]) * 1))})
+    #
+    #         # dict_rar_[dividido[0]]['qtde'] += 1  # max_val.count(rod_)
+    #         # dict_rar_[dividido[0]]['valor'] += float("{:.2f}".format(len(rar) * max_val.count(dividido[0]) * 1))
+    #         dict_rar_[dividido[1]]['qtde'] += 1  # max_val.count(rod_)
+    #         dict_rar_[dividido[1]]['valor'] += float("{:.2f}".format(len(rar) * max_val.count(dividido[1]) * 1))
+    #
+    #     if rod_ in dict_rar_:
+    #         # dict_rar_[rod_]['qtde'] = max_val.count(rod_)
+    #         # dict_rar_[rod_]['valor'] = float("{:.2f}".format(len(rar) * max_val.count(rod_) * 2))
+    #         dict_rar_[rod_].update({'qtde': max_val.count(rod_)})
+    #         dict_rar_[rod_].update({'valor': float("{:.2f}".format(len(rar) * max_val.count(rod_) * 2))})
+    #
+    # print(dict_rar_)
+
+    # if "/" in rod_:
+    # else:
+    #     dividido = rod_.split(" / ")
+    #
+    #     # for r in dividido:
+    #     #     if r in dict_rar_:
+    #     #         dict_rar_[r]['qtde'] = max_val.count(rod_) + max_val.count(rod_)
+    #     #         dict_rar_[r]['valor'] = float("{:.2f}".format(len(rar) * max_val.count(rod_) * 2)) + float(
+    #     #             "{:.2f}".format(len(rar) * max_val.count(rod_) * 1))
+    #
+    #     for r in dividido:
+    #         if r in dict_rar_:
+    #             dict_rar_[r]['qtde'] = max_val.count(r)
+    #             dict_rar_[r]['valor'] = float("{:.2f}".format(len(rar) * max_val.count(rod_) * 1))
 
     return lider_prim_turno, dict_rar_, campeao_prim_turno, vice_prim_turno
 
@@ -2358,7 +2401,6 @@ def oitavas_de_final_seg_turno():
             dict_oitavas_pts[teams.info.nome][1].append(teams.pontos)
 
     for key, value in dict_oitavas_pts.items():
-
         oitavas.append([key,
                         value[0],
                         value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 31 else value[1][0],
@@ -2669,10 +2711,10 @@ def semi_finais_seg_turno():
 
     for key, value in dict_semis_pts.items():
         semis.append([key,
-                        value[0],
-                        value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 35 else value[1][0],
-                        value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 36 else value[1][1]]
-                       )
+                      value[0],
+                      value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 35 else value[1][0],
+                      value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 36 else value[1][1]]
+                     )
 
     jogos_semis_a = []
     jogos_semis_a.append(
@@ -2806,10 +2848,10 @@ def finais_seg_turno():
 
     for key, value in dict_finais_pts.items():
         finais.append([key,
-                      value[0],
-                      value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 37 else value[1][0],
-                      value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 38 else value[1][1]]
-                     )
+                       value[0],
+                       value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 37 else value[1][0],
+                       value[1][2] if api.mercado().status.nome == 'Mercado fechado' and rod == 38 else value[1][1]]
+                      )
 
     jogos_final_a = []
     jogos_final_a.append(

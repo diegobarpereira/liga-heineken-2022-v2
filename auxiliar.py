@@ -220,7 +220,7 @@ def rodar_tudo():
 ########################### rodar_tudo
 
 
-rodar_tudo()
+# rodar_tudo()
 #
 # dict_matamata_oitavas = {}
 # # list_oitavas_seg_turno = []
@@ -292,6 +292,7 @@ rodar_tudo()
 
 # for x in range(37, 39):
 #     print(x)
+
 
 print(timeit.default_timer() - start_time)
 

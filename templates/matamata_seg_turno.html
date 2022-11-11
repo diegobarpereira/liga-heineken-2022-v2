@@ -328,15 +328,15 @@ vertical-align: middle;
 			{% if esq_maior == True %}
 
 			<tr><td class="middle border-lb" style="color:yellow;">{{"%.2f"|format(key[0])}}</td>
-			<td class="middle border-udb" style="color:yellow;">{{key[2]}}</td>
-			<td class="middle border-udb"><img src="{{ key[1] }}" width="30" height="30">
+				<td class="middle border-udb"><img src="{{ key[1] }}" width="30" height="30">
+				<td class="middle border-udb" style="color:yellow;">{{key[2]}}</td>
 			</td><td class="middle border-rb" style="color:yellow;">{{"%.2f"|format(key[3])}}</td>
 
 			{% else %}
 
 			<tr><td class="middle border-lb" style="color:white;">{{"%.2f"|format(key[0])}}</td>
-			<td class="middle border-udb" style="color:white;">{{key[2]}}</td>
-			<td class="middle border-udb"><img src="{{ key[1] }}" width="30" height="30">
+		<td class="middle border-udb"><img src="{{ key[1] }}" width="30" height="30">
+		<td class="middle border-udb" style="color:white;">{{key[2]}}</td>
 			</td><td class="middle border-rb" style="color:white;">{{"%.2f"|format(key[3])}}</td>
 
 			{% endif %}
