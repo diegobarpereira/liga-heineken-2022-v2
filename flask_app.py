@@ -135,15 +135,18 @@ def dest_page():
 def premiacao_page():
     # lider_prim_turno, lider_seg_turno, prem, campeao_geral, vice_campeao, terc_colocado, quarto_colocado, campeao, vice = premiacao()
     # lider_prim_turno, prem, campeao, vice = premiacao()
-    lider_prim_turno, prem, campeao_prim_turno, vice_prim_turno = premiacao()
+    lider_prim_turno, lider_seg_turno, prem, campeao_prim_turno, vice_prim_turno, campeao_seg_turno, vice_seg_turno,\
+        campeao_geral, vice_campeao, terc_colocado, quarto_colocado = premiacao()
     # print(lider_prim_turno)
     # print(prem)
     # print(campeao_prim_turno)
     # print(vice_prim_turno)
 
-    return render_template('premiacao.html', lider_prim_turno=lider_prim_turno, get_prem=prem,
-                           campeao=campeao_prim_turno,
-                           vice=vice_prim_turno)
+    return render_template('premiacao.html', lider_prim_turno=lider_prim_turno, lider_seg_turno=lider_seg_turno,
+                           get_prem=prem,
+                           campeao=campeao_prim_turno, vice=vice_prim_turno, campeao_seg_turno=campeao_seg_turno,
+                           vice_seg_turno=vice_seg_turno, get_lider=campeao_geral, vice_campeao=vice_campeao,
+                           terc_colocado=terc_colocado, quarto_colocado=quarto_colocado)
 
 
 @app.route("/liberta")
@@ -204,25 +207,26 @@ def liberta_segundo_turno():
 @app.route('/matamatasegturno')
 def matamata_seg_page():
     # oit_a, oit_b, qua_a, qua_b, semi_a, semi_b, final_a, final_b, esq_maior = mata_mata_prim_turno()
-    oit_a, oit_b, qua_a, qua_b, semi_a, semi_b, final_a, final_b = mata_mata_seg_turno()
-    # final = True
-    #
-    # campeao = []
-    # vice = []
-    #
-    # for f_a, f_b in zip(final_a, final_b):
-    #     if f_a[0] + f_a[3] > f_b[3] + f_b[0]:
-    #         campeao = [[f_a[1], f_a[2]]]
-    #         vice = [[f_b[1], f_b[2]]]
-    #     else:
-    #         campeao = [[f_b[1], f_b[2]]]
-    #         vice = [[f_a[1], f_a[2]]]
+    oit_a, oit_b, qua_a, qua_b, semi_a, semi_b, final_a, final_b, esq_maior = mata_mata_seg_turno()
+    final = True
+
+    campeao = []
+    vice = []
+
+    for f_a, f_b in zip(final_a, final_b):
+        if f_a[0] + f_a[3] > f_b[3] + f_b[0]:
+            campeao = [[f_a[1], f_a[2]]]
+            vice = [[f_b[1], f_b[2]]]
+        else:
+            campeao = [[f_b[1], f_b[2]]]
+            vice = [[f_a[1], f_a[2]]]
 
     # , get_list3 = qua_a,
     # get_list4 = qua_b, get_list5 = semi_a, get_list6 = semi_b, get_list7 = final_a,
     # get_list8 = final_b, esq_maior = esq_maior, campeao = campeao, vice = vice, final = final
     return render_template('matamata_seg_turno.html', get_list1=oit_a, get_list2=oit_b, get_list3=qua_a,
-                           get_list4=qua_b, get_list5=semi_a, get_list6=semi_b, get_list7=final_a, get_list8=final_b)
+                           get_list4=qua_b, get_list5=semi_a, get_list6=semi_b, get_list7=final_a, get_list8=final_b,
+                           esq_maior=esq_maior, campeao=campeao, vice=vice, final=final)
 
 
 def get_times_campeonato():
@@ -456,6 +460,28 @@ def pontos():
                 else:
                     max_val.append(max_cada_rodada[0][0])
 
+    if api.mercado().status.nome == 'Final de temporada':
+        list_to_delete = ['Raça Timão!!!', 'FAFA SHOW FC', 'Sóh Taapa FC', 'RIVA 77 ']
+
+        for ltd in list_to_delete:
+            for id, nome in json.loads(nomes).items():
+                if ltd == nome:
+                    dict_temp_pontos.pop(id)
+
+        for chave, valor in dict_temp_pontos.items():
+            for id, nome in json.loads(nomes).items():
+                if chave == id:
+                    dict_nome[nome] = valor
+
+        for x in range(0, api.mercado().rodada_atual):
+            max_cada_rodada = sorted({k: v[x] for k, v in dict_nome.items()}.items(), key=lambda y: y[1],
+                                     reverse=True)
+            if max_cada_rodada[0][0] in rar:
+                if max_cada_rodada[0][1] == max_cada_rodada[1][1]:
+                    max_val.append(f'{max_cada_rodada[0][0]} / {max_cada_rodada[1][0]}')
+                else:
+                    max_val.append(max_cada_rodada[0][0])
+
     return dict_pontos, max_val, media
 
 
@@ -606,8 +632,10 @@ def liga_class():
     campeonato.pop('AvantiHulkFc')
 
     lider_prim_turno = next(iter(primeiro_turno))
+    lider_seg_turno = next(iter(segundo_turno))
 
     dict_prem['primeiro_turno']['lider'] = lider_prim_turno
+    dict_prem['segundo_turno']['lider'] = lider_seg_turno
 
     with open(f'static/dict_prem.json', 'w', encoding='utf-8') as f:
         json.dump(dict_prem, f)
@@ -846,8 +874,16 @@ def premiacao():
     dict_pontos, max_val, media = pontos()
 
     lider_prim_turno = json.loads(data)['primeiro_turno']['lider']
+    lider_seg_turno = json.loads(data)['segundo_turno']['lider']
     campeao_prim_turno = json.loads(data)['liberta_prim_turno']['campeao']
     vice_prim_turno = json.loads(data)['liberta_prim_turno']['vice']
+    campeao_seg_turno = json.loads(data)['liberta_seg_turno']['campeao']
+    vice_seg_turno = json.loads(data)['liberta_seg_turno']['vice']
+
+    campeao_geral = next(iter(dict_pontos))
+    vice_campeao = list(dict_pontos.keys())[1]
+    terc_colocado = list(dict_pontos.keys())[2]
+    quarto_colocado = list(dict_pontos.keys())[3]
 
     dict_rar_ = {}
     for time in rar:
@@ -864,54 +900,8 @@ def premiacao():
                 dict_rar_[r]['qtde'] += 1
                 dict_rar_[r]['valor'] += float("{:.2f}".format(len(rar) * 1 * 1))
 
-
-    print(dict_rar_)
-
-
-
-    # for rod_ in max_val:
-    #
-    #     # if rod_ in dict_rar_:
-    #     #     dict_rar_[rod_]['qtde'] = max_val.count(rod_)
-    #     #     dict_rar_[rod_]['valor'] = float("{:.2f}".format(len(rar) * max_val.count(rod_) * 2))
-    #
-    #     if "/" in rod_:
-    #
-    #         dividido = rod_.split(" / ")
-    #
-    #         dict_rar_[dividido[0]].update({'qtde': max_val.count(rod_)})
-    #         dict_rar_[dividido[0]].update(
-    #             {'valor': float("{:.2f}".format(len(rar) * max_val.count(dividido[0]) * 1))})
-    #
-    #         # dict_rar_[dividido[0]]['qtde'] += 1  # max_val.count(rod_)
-    #         # dict_rar_[dividido[0]]['valor'] += float("{:.2f}".format(len(rar) * max_val.count(dividido[0]) * 1))
-    #         dict_rar_[dividido[1]]['qtde'] += 1  # max_val.count(rod_)
-    #         dict_rar_[dividido[1]]['valor'] += float("{:.2f}".format(len(rar) * max_val.count(dividido[1]) * 1))
-    #
-    #     if rod_ in dict_rar_:
-    #         # dict_rar_[rod_]['qtde'] = max_val.count(rod_)
-    #         # dict_rar_[rod_]['valor'] = float("{:.2f}".format(len(rar) * max_val.count(rod_) * 2))
-    #         dict_rar_[rod_].update({'qtde': max_val.count(rod_)})
-    #         dict_rar_[rod_].update({'valor': float("{:.2f}".format(len(rar) * max_val.count(rod_) * 2))})
-    #
-    # print(dict_rar_)
-
-    # if "/" in rod_:
-    # else:
-    #     dividido = rod_.split(" / ")
-    #
-    #     # for r in dividido:
-    #     #     if r in dict_rar_:
-    #     #         dict_rar_[r]['qtde'] = max_val.count(rod_) + max_val.count(rod_)
-    #     #         dict_rar_[r]['valor'] = float("{:.2f}".format(len(rar) * max_val.count(rod_) * 2)) + float(
-    #     #             "{:.2f}".format(len(rar) * max_val.count(rod_) * 1))
-    #
-    #     for r in dividido:
-    #         if r in dict_rar_:
-    #             dict_rar_[r]['qtde'] = max_val.count(r)
-    #             dict_rar_[r]['valor'] = float("{:.2f}".format(len(rar) * max_val.count(rod_) * 1))
-
-    return lider_prim_turno, dict_rar_, campeao_prim_turno, vice_prim_turno
+    return lider_prim_turno, lider_seg_turno, dict_rar_, campeao_prim_turno, vice_prim_turno, campeao_seg_turno, \
+           vice_seg_turno, campeao_geral, vice_campeao, terc_colocado,quarto_colocado
 
 
 def get_times_rodada():
@@ -2873,26 +2863,26 @@ def mata_mata_seg_turno():
     jogos_quartas_a, jogos_quartas_b = quartas_de_final_seg_turno()
     jogos_semis_a, jogos_semis_b = semi_finais_seg_turno()
     jogos_final_a, jogos_final_b, esq_maior = finais_seg_turno()
-    # campeao_prim_turno = ''
-    # vice_prim_turno = ''
-    #
-    # for f_a, f_b in zip(jogos_final_a, jogos_final_b):
-    #     if f_a[0] + f_a[3] > f_b[3] + f_b[0]:
-    #         campeao_prim_turno = f_a[2]
-    #         vice_prim_turno = f_b[2]
-    #     else:
-    #         campeao_prim_turno = f_b[2]
-    #         vice_prim_turno = f_a[2]
-    #
-    # dict_prem['liberta_prim_turno']['campeao'] = campeao_prim_turno
-    # dict_prem['liberta_prim_turno']['vice'] = vice_prim_turno
-    #
-    # with open(f'static/dict_prem.json', 'w', encoding='utf-8') as f:
-    #     json.dump(dict_prem, f)
+    campeao_prim_turno = ''
+    vice_prim_turno = ''
+
+    for f_a, f_b in zip(jogos_final_a, jogos_final_b):
+        if f_a[0] + f_a[3] > f_b[3] + f_b[0]:
+            campeao_prim_turno = f_a[2]
+            vice_prim_turno = f_b[2]
+        else:
+            campeao_prim_turno = f_b[2]
+            vice_prim_turno = f_a[2]
+
+    dict_prem['liberta_seg_turno']['campeao'] = campeao_prim_turno
+    dict_prem['liberta_seg_turno']['vice'] = vice_prim_turno
+
+    with open(f'static/dict_prem.json', 'w', encoding='utf-8') as f:
+        json.dump(dict_prem, f)
 
     # print(jogos_oitavas_a, jogos_oitavas_b, jogos_quartas_a, jogos_quartas_b, jogos_semis_a, jogos_semis_b, jogos_final_a, jogos_final_b, esq_maior)
-    # return jogos_oitavas_a, jogos_oitavas_b, jogos_quartas_a, jogos_quartas_b, jogos_semis_a, jogos_semis_b, jogos_final_a, jogos_final_b, esq_maior
-    return jogos_oitavas_a, jogos_oitavas_b, jogos_quartas_a, jogos_quartas_b, jogos_semis_a, jogos_semis_b, jogos_final_a, jogos_final_b
+    # return jogos_oitavas_a, jogos_oitavas_b, jogos_quartas_a, jogos_quartas_b, jogos_semis_a, jogos_semis_b, jogos_final_a, jogos_final_b
+    return jogos_oitavas_a, jogos_oitavas_b, jogos_quartas_a, jogos_quartas_b, jogos_semis_a, jogos_semis_b, jogos_final_a, jogos_final_b, esq_maior
 
 
 if __name__ == '__main__':
