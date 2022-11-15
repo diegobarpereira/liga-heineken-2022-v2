@@ -53,7 +53,11 @@ def index_page():
         liga = api.liga('liga-heineken-2022')
         nome = liga.nome
         escudo = liga.escudo
-        return render_template('index.html', get_nome=nome, get_escudo=escudo)
+        if mercado_status == 'Mercado Aberto' or mercado_status == 'Mercado fechado':
+            return render_template('index.html', get_nome=nome, get_escudo=escudo)
+        if mercado_status == 'Final de temporada':
+            fim_de_temporada = 'A temporada de 2022 chegou ao fim.'
+            return render_template('index.html', get_nome=nome, get_escudo=escudo, fim_de_temporada=fim_de_temporada)
 
 
 @app.route('/participantes')
@@ -559,7 +563,7 @@ def liga_class():
         for x, y in json.loads(data_sem_capitao).items():
             dict_sem_capitao[x] = y
 
-    if api.mercado().status.nome == 'Mercado aberto':
+    if api.mercado().status.nome == 'Mercado aberto' or api.mercado().status.nome == 'Final de temporada':
 
         for (c1, v1), (chave, valor), (chave_, valor_), (chave_sc, valor_sc) in zip(primeiro_turno_.items(),
                                                                                     campeonato_.items(),
@@ -656,10 +660,15 @@ def retornar_estats_liga():
 
 
 def times_rodadas(id_, rodada):
-    if rodada < rod:
+    if mercado_status == 'Mercado aberto':
+        if rodada < rod:
+            time_ = api.time(id_, rodada=rodada)
+        else:
+            time_ = api.time_parcial(id_)
+
+    if mercado_status == 'Final de temporada':
         time_ = api.time(id_, rodada=rodada)
-    else:
-        time_ = api.time_parcial(id_)
+
     return time_
 
 
@@ -668,8 +677,13 @@ def retornar_media_time_rodada(id_):
     teams = []
 
     with ThreadPoolExecutor(max_workers=20) as executor:
-        for x in range(1, rod):
-            threads.append(executor.submit(times_rodadas, id_, rodada=x))
+        if mercado_status == 'Mercado aberto':
+            for x in range(1, rod):
+                threads.append(executor.submit(times_rodadas, id_, rodada=x))
+
+        if mercado_status == 'Final de temporada':
+            for x in range(1, rod + 1):
+                threads.append(executor.submit(times_rodadas, id_, rodada=x))
 
         for task in as_completed(threads):
             teams.append(task.result())
@@ -699,7 +713,10 @@ def retornar_medias_time(cartola_time: str):
             break
 
     media_total = api.time(time_id)
-    mt = "{:.2f}".format(media_total.pontos / (rod - 1))
+    if mercado_status == 'Mercado aberto':
+        mt = "{:.2f}".format(media_total.pontos / (rod - 1))
+    if mercado_status == 'Final de temporada':
+        mt = "{:.2f}".format(media_total.pontos / (rod))
 
     for t in retornar_media_time_rodada(time_id):
         for value in t.atletas:
@@ -1935,7 +1952,7 @@ def get_liberta_seg_turno():
             rodada_29.append([key, float(value[1][6]) if rod == 29 else float(value[1][4])])
             rodada_30.append([key, float(value[1][6]) if rod == 30 else float(value[1][5])])
 
-    if api.mercado().status.nome == 'Mercado aberto':
+    if api.mercado().status.nome == 'Mercado aberto' or api.mercado().status.nome == 'Final de temporada':
 
         for chave, valor in ordered_dict_liberta.items():
             for c, v in json.loads(escudos).items():

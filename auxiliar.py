@@ -13,6 +13,7 @@ api = cartolafc.Api(
     glb_id='1b62a06f6d67add624e2360012d974b304a5044624c486a50716e5a374a666539744c3738702d386b79516e466c36466f546546585070585f4c414b74666a6f4273597363697258754b374a6d7257487a724b716c7a36653531556f555a6f6f2d503665574e673d3d3a303a646965676f2e323031312e382e35')
 
 rod = api.mercado().rodada_atual
+mercado_status = api.mercado().status.nome
 rodadas = range(1, rod)
 
 todos_ids = [1241021, 1893918, 1245808, 8912058, 1889674, 13957925, 71375, 48733,
@@ -23,8 +24,14 @@ todos_ids = [1241021, 1893918, 1245808, 8912058, 1889674, 13957925, 71375, 48733
 
 def get_times(id_):
     data = []
-    for r in rodadas:
-        data.append(requests.get(f'https://api.cartolafc.globo.com/time/id/{id_}/{r}').json())
+
+    if mercado_status == 'Mercado aberto':
+        for r in range(1, rod):
+            data.append(requests.get(f'https://api.cartolafc.globo.com/time/id/{id_}/{r}').json())
+
+    if mercado_status == 'Final de temporada':
+        for r in range(1, rod + 1):
+            data.append(requests.get(f'https://api.cartolafc.globo.com/time/id/{id_}/{r}').json())
 
     return data
 
@@ -38,14 +45,25 @@ def salvar_times_rodadas():
         for time in times:
             teams.append(time)
 
-    for rodada in range(1, rod):
-        inner_dict = {}
-        for d in teams:
-            for data in d:
-                if data['rodada_atual'] == rodada:
-                    inner_dict[data['time']['time_id']] = data['pontos']
+    if mercado_status == 'Mercado aberto':
+        for rodada in range(1, rod):
+            inner_dict = {}
+            for d in teams:
+                for data in d:
+                    if data['rodada_atual'] == rodada:
+                        inner_dict[data['time']['time_id']] = data['pontos']
 
-        outer_dict[rodada] = inner_dict
+            outer_dict[rodada] = inner_dict
+
+    if mercado_status == 'Final de temporada':
+        for rodada in range(1, rod + 1):
+            inner_dict = {}
+            for d in teams:
+                for data in d:
+                    if data['rodada_atual'] == rodada:
+                        inner_dict[data['time']['time_id']] = data['pontos']
+
+            outer_dict[rodada] = inner_dict
 
     with open(f'static/times_rodada.json', 'w') as f:
         json.dump(outer_dict, f)
